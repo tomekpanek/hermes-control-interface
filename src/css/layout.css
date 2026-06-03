@@ -17,6 +17,16 @@
   background: color-mix(in oklab, var(--bg-base) 90%, transparent);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  /* Promote to its own GPU composition layer + hint that backdrop-filter
+     is animated. Without this, Chrome on Windows resamples the blurred
+     backdrop on every sub-pixel scroll position (smooth-scroll inertia +
+     non-integer DPI scaling like 125%), which propagates as a visible
+     1-2px vertical jitter on the text rendering directly below — the
+     "text podskakuje pod headerem" symptom. translateZ(0) isolates the
+     topbar's compositing pass so the page content underneath can scroll
+     with stable text anti-aliasing. */
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .topbar-left {
